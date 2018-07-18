@@ -81,7 +81,8 @@ namespace ar_pose
     arMarkerPub_ = n_.advertise < ar_pose::ARMarkers > ("ar_pose_marker", 0);
     if(publishVisualMarkers_)
     {
-      rvizMarkerPub_ = n_.advertise < visualization_msgs::Marker > ("visualization_marker", 0);
+      rvizMarkerPub_ = n_.advertise < visualization_msgs::Marker > ("viz_marker", 0);
+      rvizMarkersPub_ = n_.advertise < visualization_msgs::MarkerArray > ("viz_markers", 0);
     }
   }
 
@@ -193,6 +194,8 @@ namespace ar_pose
     }
 
     arPoseMarkers_.markers.clear ();
+    rvizMarkers_.markers.clear();
+    
     // check for known patterns
     for (i = 0; i < objectnum; i++)
     {
@@ -309,7 +312,8 @@ namespace ar_pose
 
         rvizMarker_.scale.x = 1.0 * object[i].marker_width * AR_TO_ROS;
         rvizMarker_.scale.y = 1.0 * object[i].marker_width * AR_TO_ROS;
-        rvizMarker_.scale.z = 0.5 * object[i].marker_width * AR_TO_ROS;
+        // rvizMarker_.scale.z = 0.5 * object[i].marker_width * AR_TO_ROS;
+        rvizMarker_.scale.z = round(marker_info->cf * 100);
         rvizMarker_.ns = "basic_shapes";
         rvizMarker_.type = visualization_msgs::Marker::CUBE;
         rvizMarker_.action = visualization_msgs::Marker::ADD;
@@ -335,10 +339,13 @@ namespace ar_pose
         }
         rvizMarker_.lifetime = ros::Duration (1.0);
 
+        rvizMarkers_.markers.push_back(rvizMarker_);
+
         rvizMarkerPub_.publish(rvizMarker_);
         ROS_DEBUG ("Published visual marker");
       }
     }
+    rvizMarkersPub_.publish(rvizMarkers_);
     arMarkerPub_.publish(arPoseMarkers_);
     ROS_DEBUG ("Published ar_multi markers");
   }

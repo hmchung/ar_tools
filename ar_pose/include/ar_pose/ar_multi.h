@@ -42,6 +42,7 @@
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
 #include <resource_retriever/retriever.h>
 
 #include <opencv/cv.h>
@@ -94,6 +95,7 @@ namespace ar_pose
 
     // **** for visualisation in rviz
     ros::Publisher rvizMarkerPub_;
+    ros::Publisher rvizMarkersPub_;
     visualization_msgs::Marker rvizMarker_;
 
     // **** parameters
@@ -103,6 +105,7 @@ namespace ar_pose
     int objectnum;
     char pattern_filename_[FILENAME_MAX];
 
+    visualization_msgs::MarkerArray rvizMarkers_;
     ar_pose::ARMarkers arPoseMarkers_;
     int threshold_;
     bool getCamInfo_;
